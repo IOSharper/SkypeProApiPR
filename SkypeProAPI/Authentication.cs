@@ -15,13 +15,56 @@ namespace SkypeProAPI
 
         public void GetSecurityToken(login, password){
             string url = "https://login.live.com/RST.srf";
-            string content = 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            string content = @"<Envelope xmlns=""http://schemas.xmlsoap.org/soap/envelope/""
+   xmlns:wsse=""http://schemas.xmlsoap.org/ws/2003/06/secext""
+   xmlns:wsp=""http://schemas.xmlsoap.org/ws/2002/12/policy""
+   xmlns:wsa=""http://schemas.xmlsoap.org/ws/2004/03/addressing""
+   xmlns:wst=""http://schemas.xmlsoap.org/ws/2004/04/trust""
+   xmlns:ps=""http://schemas.microsoft.com/Passport/SoapServices/PPCRL"">
+   <Header>
+       <wsse:Security>
+           <wsse:UsernameToken Id=""user"">
+               <wsse:Username>" + login + @"</wsse:Username>
+               <wsse:Password>" + password + @"</wsse:Password>
+           </wsse:UsernameToken>
+       </wsse:Security>
+   </Header>
+   <Body>
+       <ps:RequestMultipleSecurityTokens Id=""RSTS"">
+           <wst:RequestSecurityToken Id=""RST0"">
+               <wst:RequestType>http://schemas.xmlsoap.org/ws/2004/04/security/trust/Issue</wst:RequestType>
+               <wsp:AppliesTo>
+                   <wsa:EndpointReference>
+                       <wsa:Address>wl.skype.com</wsa:Address>
+                   </wsa:EndpointReference>
+               </wsp:AppliesTo>
+               <wsse:PolicyReference URI=""MBI_SSL""></wsse:PolicyReference>
+           </wst:RequestSecurityToken>
+       </ps:RequestMultipleSecurityTokens>
+   </Body>
+</Envelope>";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url, content);
             request.method = "POST";
             request.ContentType = "application/xml";
             request.UserAgent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 7.1; Trident/5.0)";
 
             request.Timeout = 5000;
+
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            var encoding = ASCIIEncoding.ASCII;
+            if(response.StatusCode == HttpStatusCode.OK)
+            {
+                using (var reader = new StreamReader(response.GetResponseStream(), encoding))
+                {
+                    string responseText = reader.ReadToEnd();
+                }
+                response.Close();
+            }
+            else
+            {
+                response.Close();
+            }
         }
         public void GetSkypeToken(SecurityToken){
             

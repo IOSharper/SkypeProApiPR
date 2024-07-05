@@ -44,14 +44,14 @@ namespace SkypeProAPI
    </Body>
 </Envelope>";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-
-            byte[] requestBytes = new ASCIIEncoding().GetBytes(content);
-            Stream requestStream = request.GetRequestStream();
-            requestStream.Write(requestBytes, 0, requestBytes.Length);
-            requestStream.Close();
             request.Method = "POST";
             request.ContentType = "application/xml";
             request.UserAgent = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 7.1; Trident/5.0)";
+            
+            byte[] requestBytes = new ASCIIEncoding().GetBytes(content);
+            Stream requestStream = request.GetRequestStream();
+            requestStream.Write(requestBytes, 0, requestBytes.Length);
+            requestStream.Close();            
 
             request.Timeout = 5000;
 

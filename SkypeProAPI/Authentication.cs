@@ -13,7 +13,7 @@ namespace SkypeProAPI
         public string SkypeToken;
         public string RegistrationToken;
 
-        public void GetSecurityToken(login, password){
+        public void GetSecurityToken(string login, string password){
             string url = "https://login.live.com/RST.srf";
             string content = @"<Envelope xmlns=""http://schemas.xmlsoap.org/soap/envelope/""
    xmlns:wsse=""http://schemas.xmlsoap.org/ws/2003/06/secext""
@@ -66,8 +66,8 @@ namespace SkypeProAPI
                 response.Close();
             }
         }
-        public void GetSkypeToken(SecurityToken){
-            
+        public void GetSkypeToken(string SecurityToken){
+
         }
     }
 }
